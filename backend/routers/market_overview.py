@@ -7,13 +7,14 @@ import asyncio
 from concurrent.futures import ThreadPoolExecutor
 
 router = APIRouter(prefix="/api/market", tags=["market-overview"])
-executor = ThreadPoolExecutor(max_workers=3)
+executor = ThreadPoolExecutor(max_workers=4)
 
 
 class MarketRequest(BaseModel):
     stock_symbol: str
     currency_symbol: str
     gdp_world_bank: str
+    inflation_world_bank: str
 
 
 def fetch_market_symbol(symbol: str):
@@ -29,7 +30,10 @@ def fetch_market_symbol(symbol: str):
     df["Year"] = pd.to_datetime(df["Date"]).dt.year
     df["Month"] = pd.to_datetime(df["Date"]).dt.month
 
-    yearly_df = df[df["Month"] == 12].drop_duplicates(subset=["Year"], keep="last")
+    yearly_df = df[df["Month"] == 12].drop_duplicates(
+        subset=["Year"],
+        keep="last",
+    )
 
     if yearly_df.empty:
         yearly_df = df.groupby(df["Date"].dt.year).last().reset_index()
@@ -43,7 +47,7 @@ def fetch_market_symbol(symbol: str):
     ]
 
 
-def fetch_gdp(url: str):
+def fetch_world_bank_data(url: str):
     resp = requests.get(url, timeout=10)
     resp.raise_for_status()
 
@@ -85,20 +89,33 @@ async def get_all_market_data(request: MarketRequest):
 
         gdp_task = loop.run_in_executor(
             executor,
-            fetch_gdp,
+            fetch_world_bank_data,
             request.gdp_world_bank,
         )
 
-        stock_data, currency_data, gdp_data = await asyncio.gather(
+        inflation_task = loop.run_in_executor(
+            executor,
+            fetch_world_bank_data,
+            request.inflation_world_bank,
+        )
+
+        (
+            stock_data,
+            currency_data,
+            gdp_data,
+            inflation_data,
+        ) = await asyncio.gather(
             stock_task,
             currency_task,
             gdp_task,
+            inflation_task,
         )
 
         return {
             "nifty": stock_data,
             "usdinr": currency_data,
             "gdp": gdp_data,
+            "inflation": inflation_data,
         }
 
     except Exception as e:

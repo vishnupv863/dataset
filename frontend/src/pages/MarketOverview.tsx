@@ -24,6 +24,7 @@ interface CombinedMarketData {
   nifty: DataPoint[];
   usdinr: DataPoint[];
   gdp: DataPoint[];
+  inflation: DataPoint[];
 }
 
 const CustomTooltip = ({
@@ -39,12 +40,17 @@ const CustomTooltip = ({
         <div className="tooltip-title">
           Year: {new Date(label).getFullYear()}
         </div>
-        <div className="tooltip-value" style={{ color: payload[0].fill }}>
+
+        <div
+          className="tooltip-value"
+          style={{ color: payload[0].fill }}
+        >
           {yLabel}: {valueFormatter(payload[0].value)}
         </div>
       </div>
     );
   }
+
   return null;
 };
 
@@ -155,6 +161,8 @@ export default function MarketOverview() {
         stock_symbol: countryConfig.stock_symbol,
         currency_symbol: countryConfig.currency_symbol,
         gdp_world_bank: countryConfig.gdp_world_bank,
+        inflation_world_bank:
+          countryConfig.inflation_world_bank,
       }),
     })
       .then((res) => {
@@ -163,9 +171,10 @@ export default function MarketOverview() {
             `Server configuration tracking error: ${res.status}`
           );
         }
+
         return res.json();
       })
-      .then((json) => {
+      .then((json: CombinedMarketData) => {
         setMarketData(json);
         setLoading(false);
       })
@@ -202,7 +211,7 @@ export default function MarketOverview() {
   return (
     <div className="dashboard-container">
       <h2 className="dashboard-header">
-        Market Overview Dashboard
+        Stock/Currency/Gdp/Inflation Over the years
       </h2>
 
       <CountryDropdown
@@ -241,6 +250,14 @@ export default function MarketOverview() {
         color="#16a34a"
         yLabel="GDP"
         valueFormatter={(v) => `$${v.toFixed(1)}B`}
+      />
+
+      <InteractiveBarChart
+        title={`${selectedCountry} Inflation Rate (%)`}
+        data={marketData.inflation}
+        color="#dc2626"
+        yLabel="Inflation"
+        valueFormatter={(v) => `${v.toFixed(2)}%`}
       />
     </div>
   );
