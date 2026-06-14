@@ -1,0 +1,78 @@
+/* ==========================================================================
+   Dashboard Layout Wrapper
+   ========================================================================== */
+.dashboard-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 24px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: #f8fafc;
+}
+
+/* Dashboard Page Header */
+.dashboard-header {
+  font-size: 24px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 24px;
+}
+
+/* ==========================================================================
+   Reusable Chart Card Component
+   ========================================================================== */
+.chart-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Internal Chart Title Header */
+.chart-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #334155;
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+/* ==========================================================================
+   Fallback Message Viewport States (Loading, Error, Blank Data)
+   ========================================================================== */
+.dashboard-fallback-text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #64748b;
+}
+
+.dashboard-fallback-text.error {
+  color: #ef4444;
+}
+
+/* ==========================================================================
+   Custom Tooltip Overlay Styles
+   ========================================================================== */
+.custom-chart-tooltip {
+  background-color: rgba(255, 255, 255, 0.98);
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 10px 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-size: 13px;
+}
+
+.tooltip-title {
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 4px;
+}
+
+.tooltip-value {
+  font-weight: 500;
+}
