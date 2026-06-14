@@ -26,7 +26,7 @@ export default function Home() {
       )}
       
       <Link to="/market-overview" className="dashboard-link">
-        View Market Overview Dashboard
+        Market view - Top selected countries
       </Link>
     </div>
   );
